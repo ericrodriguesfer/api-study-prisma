@@ -2,7 +2,7 @@ version: '3'
 
 services:
   database:
-    container_name: 'api-nest'
+    container_name: 'api-prisma'
     image: 'postgres:13-alpine'
     environment:
       - POSTGRES_USER=${PRISMA_USERNAME}
