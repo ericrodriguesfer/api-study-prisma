@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  database:
+    container_name: 'api-nest'
+    image: 'postgres:13-alpine'
+    environment:
+      - POSTGRES_USER=${PRISMA_USERNAME}
+      - POSTGRES_PASSWORD=${PRISMA_PASSWORD}
+      - POSTGRES_DB=${PRISMA_DATABASE}
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    ports:
+      - ${PRISMA_PORT}:5432
+    restart: unless-stopped
