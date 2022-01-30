@@ -2,20 +2,9 @@ import { User } from '@prisma/client';
 import { Request, Response } from 'express';
 
 import CreateUserService from '../services/CreateUserService';
-import ListUsersService from '../services/ListUsersService';
 import UpdateUserService from '../services/UpdateUserService';
 
 class UserController {
-  async list(request: Request, response: Response) {
-    try {
-      const users: Array<User> = await new ListUsersService().execute();
-
-      return response.json(users);
-    } catch (error) {
-      return response.status(400).json({ error: (error as Error).message });
-    }
-  }
-
   async create(request: Request, response: Response) {
     try {
       const { name, email, password } = request.body;

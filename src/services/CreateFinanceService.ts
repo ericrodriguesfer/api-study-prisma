@@ -1,4 +1,4 @@
-import { Finances, TypeFinance } from '@prisma/client';
+import { Finances, TypeFinance, User } from '@prisma/client';
 import prismaClient from '../database';
 import typeFinanceEnum from '../utils/typeFinanceEnum';
 
@@ -18,6 +18,16 @@ class CreateFinanceService {
     type,
     value,
   }: CreateFinanceDTO): Promise<Finances> {
+    const user: User | null = await prismaClient.user.findUnique({
+      where: { id: user_id },
+    });
+
+    if (!user) {
+      throw new Error(
+        'The user contained in the login, does not exist in our database',
+      );
+    }
+
     const existsFinanceByName: Finances | null =
       await prismaClient.finances.findFirst({ where: { name } });
 

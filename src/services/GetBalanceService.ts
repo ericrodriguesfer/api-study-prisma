@@ -1,4 +1,4 @@
-import { Finances } from '@prisma/client';
+import { Finances, User } from '@prisma/client';
 import prismaClient from '../database';
 import typeFinanceEnum from '../utils/typeFinanceEnum';
 
@@ -12,13 +12,18 @@ interface Balance {
   balance: number;
 }
 
-interface BalanceResponseDTO {
-  balance: Balance;
-  finances: Array<Finances>;
-}
-
 class GetBalanceService {
-  async execute({ user_id }: GetBalanceToUserDTO): Promise<BalanceResponseDTO> {
+  async execute({ user_id }: GetBalanceToUserDTO): Promise<Balance> {
+    const user: User | null = await prismaClient.user.findUnique({
+      where: { id: user_id },
+    });
+
+    if (!user) {
+      throw new Error(
+        'The user contained in the login, does not exist in our database',
+      );
+    }
+
     const finances: Array<Finances> = await prismaClient.finances.findMany({
       where: { userId: user_id },
     });
@@ -42,7 +47,7 @@ class GetBalanceService {
 
     balance.balance = balance.in - balance.out;
 
-    return { balance, finances };
+    return balance;
   }
 }
 

@@ -1,4 +1,4 @@
-import { Finances } from '@prisma/client';
+import { Finances, User } from '@prisma/client';
 import prismaClient from '../database';
 
 interface ResponseDeletedFinanceDTO {
@@ -7,11 +7,25 @@ interface ResponseDeletedFinanceDTO {
 }
 
 interface DeleteFinanceDTO {
+  user_id: string;
   id: string;
 }
 
 class DeleteFinanceService {
-  async execute({ id }: DeleteFinanceDTO): Promise<ResponseDeletedFinanceDTO> {
+  async execute({
+    user_id,
+    id,
+  }: DeleteFinanceDTO): Promise<ResponseDeletedFinanceDTO> {
+    const user: User | null = await prismaClient.user.findUnique({
+      where: { id: user_id },
+    });
+
+    if (!user) {
+      throw new Error(
+        'The user contained in the login, does not exist in our database',
+      );
+    }
+
     const finance: Finances | null = await prismaClient.finances.findFirst({
       where: { id },
     });

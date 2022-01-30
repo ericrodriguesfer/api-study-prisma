@@ -82,11 +82,12 @@ class FinanceController {
 
   async update(request: Request, response: Response) {
     try {
+      const { id: user_id } = request.user;
       const { id } = request.params;
       const { name, type, value, type_finance_id } = request.body;
 
       const financeUpdated: Finances = await new UpdateFinanceService().execute(
-        { id, name, type, value, type_finance_id },
+        { user_id, id, name, type, value, type_finance_id },
       );
 
       return response.json(financeUpdated);
@@ -97,9 +98,13 @@ class FinanceController {
 
   async delete(request: Request, response: Response) {
     try {
+      const { id: user_id } = request.user;
       const { id } = request.params;
 
-      const deletedFinance = await new DeleteFinanceService().execute({ id });
+      const deletedFinance = await new DeleteFinanceService().execute({
+        user_id,
+        id,
+      });
 
       return response.json(deletedFinance);
     } catch (error) {

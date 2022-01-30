@@ -4,7 +4,6 @@ import authenticated from '../middlewares/authenticated';
 
 const users: Router = Router();
 
-users.get('/', authenticated, new UserController().list);
 users.post('/', new UserController().create);
 users.put('/', authenticated, new UserController().update);
 

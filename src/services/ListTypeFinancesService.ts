@@ -1,4 +1,4 @@
-import { TypeFinance } from '@prisma/client';
+import { TypeFinance, User } from '@prisma/client';
 import prismaClient from '../database';
 
 interface ListFinancesToUserDTO {
@@ -9,6 +9,16 @@ class ListTypeFinancesService {
   async execute({
     user_id,
   }: ListFinancesToUserDTO): Promise<Array<TypeFinance>> {
+    const user: User | null = await prismaClient.user.findUnique({
+      where: { id: user_id },
+    });
+
+    if (!user) {
+      throw new Error(
+        'The user contained in the login, does not exist in our database',
+      );
+    }
+
     const typeFinances: Array<TypeFinance> =
       await prismaClient.typeFinance.findMany({ where: { userId: user_id } });
 

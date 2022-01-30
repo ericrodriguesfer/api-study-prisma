@@ -38,10 +38,12 @@ class TypeFinancesController {
 
   async delete(request: Request, response: Response) {
     try {
+      const { id: user_id } = request.user;
       const { id } = request.params;
 
       const deletedTypeFinance = await new DeleteTypeFinanceService().execute({
         id,
+        user_id,
       });
 
       return response.json(deletedTypeFinance);

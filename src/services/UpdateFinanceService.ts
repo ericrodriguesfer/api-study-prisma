@@ -1,8 +1,9 @@
-import { Finances, TypeFinance } from '@prisma/client';
+import { Finances, TypeFinance, User } from '@prisma/client';
 import prismaClient from '../database';
 import typeFinanceEnum from '../utils/typeFinanceEnum';
 
 interface UpdateFinanceDTO {
+  user_id: string;
   id: string;
   name?: string;
   type_finance_id?: string;
@@ -12,12 +13,23 @@ interface UpdateFinanceDTO {
 
 class UpdateFinanceService {
   async execute({
+    user_id,
     id,
     name,
     type,
     type_finance_id,
     value,
   }: UpdateFinanceDTO): Promise<Finances> {
+    const user: User | null = await prismaClient.user.findUnique({
+      where: { id: user_id },
+    });
+
+    if (!user) {
+      throw new Error(
+        'The user contained in the login, does not exist in our database',
+      );
+    }
+
     const finance: Finances | null = await prismaClient.finances.findFirst({
       where: { id },
     });
