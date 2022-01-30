@@ -8,7 +8,7 @@ Está api/back-end foi implementada como solução de implementação prática d
 * Prisma
 * JWT
 * PostgreSQL
-* Docke
+* Docker
 * docker-compose
 
 ## CASO QUEIRA SABER MAIS SOBRE O PROJETO
