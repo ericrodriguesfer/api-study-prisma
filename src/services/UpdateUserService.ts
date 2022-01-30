@@ -1,11 +1,12 @@
-import { User } from "@prisma/client";
-import prismaClient from "../database";
+import { User } from '@prisma/client';
+import { hash } from 'bcryptjs';
+import prismaClient from '../database';
 
 interface UpdateUserDTO {
   id: string;
   name: string;
   email?: string;
-  password: string;
+  password?: string;
 }
 
 class UpdateUserService {
@@ -15,7 +16,7 @@ class UpdateUserService {
     });
 
     if (!user) {
-      throw new Error("This user does not exists in our database");
+      throw new Error('This user does not exists in our database');
     }
 
     if (email) {
@@ -24,16 +25,25 @@ class UpdateUserService {
       });
 
       if (user !== userExistsByEmail && userExistsByEmail?.email === email) {
-        throw new Error("This email alread exists with other user");
+        throw new Error('This email alread exists with other user');
       }
     }
 
-    const updatedUser: User = await prismaClient.user.update({
-      where: { id: user.id },
-      data: { name, email, password },
-    });
+    if (password) {
+      const updatedUser: User = await prismaClient.user.update({
+        where: { id: user.id },
+        data: { name, email, password: String(await hash(password, 8)) },
+      });
 
-    return updatedUser;
+      return updatedUser;
+    } else {
+      const updatedUser: User = await prismaClient.user.update({
+        where: { id: user.id },
+        data: { name, email },
+      });
+
+      return updatedUser;
+    }
   }
 }
 

@@ -11,12 +11,49 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String 
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  password      String
+
+  typeFinances  TypeFinance[]
+  finances      Finances[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@map("user")
+}
+
+model TypeFinance {
+  id           String @id @default(uuid())
+  name         String
+
+  finances     Finances[]
+
+  user         User @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId       String @map("user_id")
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("type_finance")
+}
+
+model Finances {
+  id          String @id @default(uuid())
+  name        String
+  type        Int
+  value       Decimal
+
+  finance     TypeFinance @relation(fields: [financeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  financeId   String @map("type_finance_id")
+
+  user        User @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId      String @map("user_id")
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("finances")
 }

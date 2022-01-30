@@ -1,3 +1,7 @@
-import app from "./app/app";
+import app from './app/app';
 
-app.listen(3333, () => console.log("Server was started..."));
+process.on('SIGTERM', () => {
+  process.exit();
+});
+
+app.listen(3333, () => console.log('Server was started...'));

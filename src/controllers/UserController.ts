@@ -1,10 +1,9 @@
-import { User } from "@prisma/client";
-import { Request, Response } from "express";
+import { User } from '@prisma/client';
+import { Request, Response } from 'express';
 
-import CreateUserService from "../services/CreateUserService";
-import DeleteUserService from "../services/DeleteUserService";
-import ListUsersService from "../services/ListUsersService";
-import UpdateUserService from "../services/UpdateUserService";
+import CreateUserService from '../services/CreateUserService';
+import ListUsersService from '../services/ListUsersService';
+import UpdateUserService from '../services/UpdateUserService';
 
 class UserController {
   async list(request: Request, response: Response) {
@@ -35,7 +34,8 @@ class UserController {
 
   async update(request: Request, response: Response) {
     try {
-      const { id } = request.params;
+      const { id } = request.user;
+
       const { name, email, password } = request.body;
 
       const userUpdated: User = await new UpdateUserService().execute({
@@ -46,18 +46,6 @@ class UserController {
       });
 
       return response.json(userUpdated);
-    } catch (error) {
-      return response.status(400).json({ error: (error as Error).message });
-    }
-  }
-
-  async delete(request: Request, response: Response) {
-    try {
-      const { id } = request.params;
-
-      const userDeleted = await new DeleteUserService().execute({ id });
-
-      return response.json(userDeleted);
     } catch (error) {
       return response.status(400).json({ error: (error as Error).message });
     }

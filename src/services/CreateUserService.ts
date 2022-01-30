@@ -1,4 +1,5 @@
 import { User } from '@prisma/client';
+import { hash } from 'bcryptjs';
 import prismaClient from '../database';
 
 interface CreateUserDTO {
@@ -18,7 +19,7 @@ class CreateUserService {
     }
 
     const user: User = await prismaClient.user.create({
-      data: { name, email, password },
+      data: { name, email, password: String(await hash(password, 8)) },
     });
 
     return user;
